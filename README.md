@@ -96,6 +96,32 @@ translations = torch.tensor([
 translation_matrices = T(translations)  # Shape: (4, 4, 4)
 ```
 
+## Homogeneous Coordinates
+The package provides a helper function to convert standard coordinates to homogeneous coordinates
+
+```python
+import torch
+from torch_affine_utils import homogenise_coordinates
+
+# For 2D points
+points_2d = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+homogeneous_2d = homogenise_coordinates(points_2d)
+# Result: tensor([[1.0, 2.0, 1.0],
+#                 [3.0, 4.0, 1.0],
+#                 [5.0, 6.0, 1.0]])
+
+# For 3D points
+points_3d = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+homogeneous_3d = homogenise_coordinates(points_3d)
+# Result: tensor([[1.0, 2.0, 3.0, 1.0],
+#                 [4.0, 5.0, 6.0, 1.0]])
+
+# Works with any batch dimensions
+points_batched = torch.randn(2, 3, 5, 3)  # Shape: (2, 3, 5, 3) - batch of 3D points
+homogeneous_batched = homogenise_coordinates(points_batched)
+# Result shape: (2, 3, 5, 4) - added homogeneous coordinate
+```
+
 ## Coordinate Systems
 
 The library supports multiple coordinate conventions:
