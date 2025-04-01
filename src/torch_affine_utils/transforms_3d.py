@@ -224,13 +224,13 @@ def S(scale_factors: torch.Tensor) -> torch.Tensor:
 
      Matrix structure:
     ┌             ┐
-    │ sx 0  0  0  │
-    │ 0  sy 0  0  │
-    │ 0  0  sz 0  │
+    │ s1 0  0  0  │
+    │ 0  s2 0  0  │
+    │ 0  0  s3 0  │
     │ 0  0  0  1  │
     └             ┘
-    where sx, sy, sz are the scaling factors at indices 0, 1, 2 in the last dimension
-    of `scale_factors`.
+    where s1, s2, s3 are the scaling factors at indices 0, 1, 2 in the last
+    dimension of `scale_factors`.
 
     Parameters
     ----------

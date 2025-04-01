@@ -105,11 +105,11 @@ def S(scale_factors: torch.Tensor) -> torch.Tensor:
 
      Matrix structure:
     ┌          ┐
-    │ sx 0  0  │
-    │ 0  sy 0  │
+    │ s1 0  0  │
+    │ 0  s2 0  │
     │ 0  0  1  │
     └          ┘
-    where sx, sy are the scaling factors at indices 0, 1 in the last dimension
+    where s1, s2 are the scaling factors at indices 0, 1 in the last dimension
     of `scale_factors`.
 
     Parameters
