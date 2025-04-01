@@ -30,6 +30,7 @@ pip install torch-affine-utils
 ### 2D Transformations
 
 ```python
+import einops
 import torch
 from torch_affine_utils.transforms_2d import R, T, S
 
@@ -45,14 +46,19 @@ scaling = S(torch.tensor([[2.0, 3.0]]))
 # Chain transformations (apply scaling, then rotation, then translation)
 transform = translation @ rotation @ scaling
 
-# Apply to coordinates
-coords = torch.tensor([[1.0, 1.0, 1.0]]).T  # Homogeneous coordinates (x, y, w)
+# Apply to a batch of 2D coordinates
+coords = torch.tensor([
+    [1.0, 1.0, 1.0],  # Homogeneous coordinates (x, y, w)
+    [1.0, 0.0, 1.0]
+])  
+coords = einops.rearrange(coords, 'b xyw -> b xyw 1')
 transformed_coords = transform @ coords
 ```
 
 ### 3D Transformations
 
 ```python
+import einops
 import torch
 from torch_affine_utils.transforms_3d import Rx, Ry, Rz, T, S
 
@@ -68,8 +74,12 @@ scaling = S(torch.tensor([[2.0, 2.0, 2.0]]))
 # Chain transformations
 transform = translation @ rot_z @ rot_y @ rot_x @ scaling
 
-# Apply to 3D coordinates
-coords = torch.tensor([[1.0, 1.0, 1.0, 1.0]]).T  # Homogeneous coordinates (x, y, z, w)
+# Apply to a batch of 3D coordinates
+coords = torch.tensor([
+    [1.0, 1.0, 1.0, 1.0],  # Homogeneous coordinates (x, y, z, w)
+    [1.0, 0.0, 0.0, 1.0]
+])
+coords = einops.rearrange(coords, 'b xyzw -> b xyzw 1')
 transformed_coords = transform @ coords
 ```
 
