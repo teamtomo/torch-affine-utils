@@ -43,7 +43,7 @@ def R(angles: torch.Tensor | list | tuple | float, yx: bool = False, device: tor
     """
     angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
     device = device or angles.device  # Use provided device or input tensor's device
-    angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
+    angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
 
     # calculate useful values
