@@ -8,7 +8,9 @@ import torch
 import einops
 
 
-def Rx(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Rx(angles: torch.Tensor | list | tuple | float, 
+       zyx: bool = False, 
+       device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the X-axis.
 
     Matrix structure (xyzw):
@@ -44,7 +46,8 @@ def Rx(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32)
+    angles = torch.atleast_1d(angles)
     device = device or angles.device  # Use provided device or input tensor's device
     angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
@@ -70,7 +73,9 @@ def Rx(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     return matrices
 
 
-def Ry(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Ry(angles: torch.Tensor | list | tuple | float, 
+       zyx: bool = False, 
+       device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Y-axis.
 
     Matrix structure (xyzw):
@@ -106,7 +111,8 @@ def Ry(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32)
+    angles = torch.atleast_1d(angles)
     device = device or angles.device  # Use provided device or input tensor's device
     angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
@@ -132,7 +138,9 @@ def Ry(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     return matrices
 
 
-def Rz(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Rz(angles: torch.Tensor | list | tuple | float, 
+       zyx: bool = False, 
+       device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Z-axis.
 
     Matrix structure (xyzw):
@@ -168,7 +176,8 @@ def Rz(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32)
+    angles = torch.atleast_1d(angles)
     device = device or angles.device  # Use provided device or input tensor's device
     angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
@@ -190,7 +199,8 @@ def Rz(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: t
     return matrices
 
 
-def T(shifts: torch.Tensor | list | tuple, device: torch.device = None) -> torch.Tensor:
+def T(shifts: torch.Tensor | list | tuple, 
+      device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for translations.
 
     Matrix structure:
@@ -217,7 +227,8 @@ def T(shifts: torch.Tensor | list | tuple, device: torch.device = None) -> torch
         `(..., 4, 4)` array of 4x4 shift matrices.
     """
     # shape (...) -> (n, )
-    shifts = torch.atleast_1d(torch.as_tensor(shifts, dtype=torch.float32))
+    shifts = torch.as_tensor(shifts, dtype=torch.float32)
+    shifts = torch.atleast_1d(shifts)
     device = device or shifts.device  # Use provided device or input tensor's device
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
     n = shifts.shape[0]
@@ -231,7 +242,8 @@ def T(shifts: torch.Tensor | list | tuple, device: torch.device = None) -> torch
     return matrices
 
 
-def S(scale_factors: torch.Tensor | list | tuple | float, device: torch.device = None) -> torch.Tensor:
+def S(scale_factors: torch.Tensor | list | tuple | float, 
+      device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for scaling.
 
      Matrix structure:
@@ -258,8 +270,8 @@ def S(scale_factors: torch.Tensor | list | tuple | float, device: torch.device =
         `(..., 4, 4)` array of 4x4 shift matrices.
     """
     # shape (...) -> (n, )
-    scale_factors = torch.atleast_1d(
-        torch.as_tensor(scale_factors, dtype=torch.float32))
+    scale_factors = torch.as_tensor(scale_factors, dtype=torch.float32)
+    scale_factors = torch.atleast_1d(scale_factors)
     device = device or scale_factors.device  # Use provided device or input tensor's device
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
     n = scale_factors.shape[0]
