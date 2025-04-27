@@ -8,7 +8,7 @@ import torch
 import einops
 
 
-def Rx(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Rx(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the X-axis.
 
     Matrix structure (xyzw):
@@ -30,8 +30,8 @@ def Rx(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
 
     Parameters
     ----------
-    angles: torch.Tensor | list | tuple
-        `(..., )` array of angles in degrees
+    angles: torch.Tensor | list | tuple | float
+        `(..., )` array, list-like, or single float of angles in degrees.
     zyx: bool
         Whether output should be compatible with `zyxw` (`True`) or `xyzw`
         (`False`) homogenous coordinates.
@@ -46,7 +46,7 @@ def Rx(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
     # shape (...) -> (n, )
     angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
     device = device or angles.device  # Use provided device or input tensor's device
-    angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
+    angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
 
     # calculate useful values
@@ -70,7 +70,7 @@ def Rx(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
     return matrices
 
 
-def Ry(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Ry(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Y-axis.
 
     Matrix structure (xyzw):
@@ -92,8 +92,8 @@ def Ry(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
 
     Parameters
     ----------
-    angles: torch.Tensor | list | tuple
-        `(..., )` array of angles in degrees
+    angles: torch.Tensor | list | tuple | float
+        `(..., )` array, list-like, or single float of angles in degrees.
     zyx: bool
         Whether output should be compatible with `zyxw` (`True`) or `xyzw`
         (`False`) homogenous coordinates.
@@ -108,7 +108,7 @@ def Ry(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
     # shape (...) -> (n, )
     angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
     device = device or angles.device  # Use provided device or input tensor's device
-    angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
+    angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
 
     # calculate useful values
@@ -132,7 +132,7 @@ def Ry(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
     return matrices
 
 
-def Rz(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
+def Rz(angles: torch.Tensor | list | tuple | float, zyx: bool = False, device: torch.device = None) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Z-axis.
 
     Matrix structure (xyzw):
@@ -154,8 +154,8 @@ def Rz(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
 
     Parameters
     ----------
-    angles: torch.Tensor | list | tuple
-        `(..., )` array of angles in degrees
+    angles: torch.Tensor | list | tuple | float
+        `(..., )` array, list-like, or single float of angles in degrees.
     zyx: bool
         Whether output should be compatible with `zyxw` (`True`) or `xyzw`
         (`False`) homogenous coordinates.
@@ -170,7 +170,7 @@ def Rz(angles: torch.Tensor | list | tuple, zyx: bool = False, device: torch.dev
     # shape (...) -> (n, )
     angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
     device = device or angles.device  # Use provided device or input tensor's device
-    angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
+    angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
     n = angles_packed.shape[0]
 
     # calculate useful values
