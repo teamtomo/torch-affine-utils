@@ -96,6 +96,8 @@ def T(shifts: torch.Tensor | list | tuple,
         `(..., 3, 3)` array of 3x3 shift matrices.
     """
     shifts = torch.as_tensor(shifts, dtype=torch.float32)
+    if shifts.ndim > 0 and shifts.shape[-1] != 2:
+        raise ValueError("Shifts must have the last dimension of size 2 for 2D transformations.")
     shifts = torch.atleast_1d(shifts)
     device = device or shifts.device  # Use provided device or input tensor's device
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
@@ -137,6 +139,8 @@ def S(scale_factors: torch.Tensor | list | tuple | float,
         `(..., 3, 3)` array of 3x3 scaling matrices.
     """
     scale_factors = torch.as_tensor(scale_factors, dtype=torch.float32)
+    if scale_factors.ndim > 0 and scale_factors.shape[-1] != 2:
+        raise ValueError("Scale factors must have the last dimension of size 2 for 2D transformations.")
     scale_factors = torch.atleast_1d(scale_factors)
     device = device or scale_factors.device  # Use provided device or input tensor's device
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
