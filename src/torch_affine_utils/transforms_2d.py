@@ -44,9 +44,8 @@ def R(angles: torch.Tensor | list | tuple | float,
     matrices: `(..., 3, 3)` array of 3x3 rotation matrices.
     """
     angles = torch.as_tensor(angles, dtype=torch.float32)
-    angles = torch.atleast_1d(angles)
     device = device or angles.device  # Use provided device or input tensor's device
-    angles_packed, ps = einops.pack([angles], pattern='* coords')  # to 1d
+    angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
     # calculate useful values
