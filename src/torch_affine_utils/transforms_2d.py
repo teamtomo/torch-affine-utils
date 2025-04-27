@@ -8,7 +8,11 @@ import torch
 import einops
 
 
-def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
+def R(
+    angles: torch.Tensor,
+    yx: bool = False,
+    device: torch.device | None = None
+) -> torch.Tensor:
     """3x3 matrices for a rotation of homogenous coordinates in 2D.
 
     Matrix structure (xyw):
@@ -39,7 +43,8 @@ def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
     matrices: `(..., 3, 3)` array of 3x3 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32, device=device)
+    angles = torch.atleast_1d(angles)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -64,7 +69,7 @@ def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
     return matrices
 
 
-def T(shifts: torch.Tensor) -> torch.Tensor:
+def T(shifts: torch.Tensor, device: torch.device | None = None) -> torch.Tensor:
     """3x3 matrices for translations in 2D.
 
     Matrix structure:
@@ -87,7 +92,8 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
         `(..., 3, 3)` array of 3x3 shift matrices.
     """
     # shape (...) -> (n, )
-    shifts = torch.atleast_1d(torch.as_tensor(shifts, dtype=torch.float32))
+    shifts = torch.as_tensor(shifts, dtype=torch.float32, device=device)
+    shifts = torch.atleast_1d(shifts)
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
     n = shifts.shape[0]
 
@@ -100,7 +106,7 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
     return matrices
 
 
-def S(scale_factors: torch.Tensor) -> torch.Tensor:
+def S(scale_factors: torch.Tensor, device: torch.device | None = None) -> torch.Tensor:
     """3x3 matrices for scaling in 2D.
 
      Matrix structure:
@@ -123,8 +129,8 @@ def S(scale_factors: torch.Tensor) -> torch.Tensor:
         `(..., 3, 3)` array of 3x3 scaling matrices.
     """
     # shape (...) -> (n, )
-    scale_factors = torch.atleast_1d(
-        torch.as_tensor(scale_factors, dtype=torch.float32))
+    scale_factors = torch.as_tensor(scale_factors, dtype=torch.float32, device=device)
+    scale_factors = torch.atleast_1d(scale_factors)
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
     n = scale_factors.shape[0]
 

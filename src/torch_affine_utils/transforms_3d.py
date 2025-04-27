@@ -8,7 +8,11 @@ import torch
 import einops
 
 
-def Rx(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
+def Rx(
+    angles: torch.Tensor,
+    zyx: bool = False,
+    device: torch.device | None = None
+) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the X-axis.
 
     Matrix structure (xyzw):
@@ -41,7 +45,8 @@ def Rx(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles))
+    angles = torch.as_tensor(angles, dtype=torch.float32, device=device)
+    angles = torch.atleast_1d(angles)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -66,7 +71,11 @@ def Rx(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     return matrices
 
 
-def Ry(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
+def Ry(
+    angles: torch.Tensor,
+    zyx: bool = False,
+    device: torch.device | None = None
+) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Y-axis.
 
     Matrix structure (xyzw):
@@ -99,7 +108,8 @@ def Ry(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32, device=device)
+    angles = torch.atleast_1d(angles)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -124,7 +134,11 @@ def Ry(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     return matrices
 
 
-def Rz(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
+def Rz(
+    angles: torch.Tensor,
+    zyx: bool = False,
+    device: torch.device | None = None
+) -> torch.Tensor:
     """4x4 matrices for a rotation of homogenous coordinates around the Z-axis.
 
     Matrix structure (xyzw):
@@ -157,7 +171,8 @@ def Rz(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     matrices: `(..., 4, 4)` array of 4x4 rotation matrices.
     """
     # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32, device=device)
+    angles = torch.atleast_1d(angles)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -178,7 +193,7 @@ def Rz(angles: torch.Tensor, zyx: bool = False) -> torch.Tensor:
     return matrices
 
 
-def T(shifts: torch.Tensor) -> torch.Tensor:
+def T(shifts: torch.Tensor, device: torch.device | None = None) -> torch.Tensor:
     """4x4 matrices for translations.
 
     Matrix structure:
@@ -206,7 +221,8 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
         `(..., 4, 4)` array of 4x4 shift matrices.
     """
     # shape (...) -> (n, )
-    shifts = torch.atleast_1d(torch.as_tensor(shifts, dtype=torch.float32))
+    shifts = torch.as_tensor(shifts, dtype=torch.float32, device=device)
+    shifts = torch.atleast_1d(shifts)
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
     n = shifts.shape[0]
 
@@ -219,7 +235,10 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
     return matrices
 
 
-def S(scale_factors: torch.Tensor) -> torch.Tensor:
+def S(
+    scale_factors: torch.Tensor,
+    device: torch.device | None = None
+) -> torch.Tensor:
     """4x4 matrices for scaling.
 
      Matrix structure:
@@ -243,8 +262,8 @@ def S(scale_factors: torch.Tensor) -> torch.Tensor:
         `(..., 4, 4)` array of 4x4 shift matrices.
     """
     # shape (...) -> (n, )
-    scale_factors = torch.atleast_1d(
-        torch.as_tensor(scale_factors, dtype=torch.float32))
+    scale_factors = torch.as_tensor(scale_factors, dtype=torch.float32, device=device)
+    scale_factors = torch.atleast_1d(scale_factors)
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
     n = scale_factors.shape[0]
 
