@@ -1,6 +1,12 @@
 """Utilities for affine transformations of 2d/3d coordinates in PyTorch"""
 
-__version__ = '0.1.0'
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("torch-affine-utils")
+except PackageNotFoundError:
+    __version__ = "uninstalled"
+
 __author__ = "Alister Burt"
 __email__ = "alisterburt@gmail.com"
 
