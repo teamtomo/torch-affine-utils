@@ -88,3 +88,8 @@ def test_batching():
             pass
         else:
             raise AssertionError(f"{O.__name__} should raise an error for tensors with last dimension > 2")
+
+
+def test_backpropagation():
+    """Test that gradients can be back propagated from output to input."""
+    for
