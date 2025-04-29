@@ -59,6 +59,7 @@ def test_scaling():
 
 TRANSFORMS = [Rx, Ry, Rz, T, S]
 
+
 def test_devices():
     """Test that the matrices are created on the correct device."""
     for O in TRANSFORMS:
@@ -114,3 +115,16 @@ def test_batching():
             pass
         else:
             raise AssertionError(f"{O.__name__} should raise an error for tensors with last dimension > 3")
+
+
+def test_backpropagation():
+    """Test that gradients can be back propagated from output to input."""
+    for O in TRANSFORMS:
+        x = torch.tensor([90.0, 60.0, 30.0], requires_grad=True)
+        y = O(x)
+        assert y.requires_grad
+
+        # y needs to be a scalar value (i.e. a loss) for backpropagation to work
+        # hence the sum() operation
+        y.sum().backward()
+        assert x.grad is not None

@@ -92,4 +92,12 @@ def test_batching():
 
 def test_backpropagation():
     """Test that gradients can be back propagated from output to input."""
-    for
+    for O in TRANSFORMS:
+        x = torch.tensor([90.0, 45.0], requires_grad=True)
+        y = O(x)
+        assert y.requires_grad
+
+        # y needs to be a scalar value (i.e. a loss) for backpropagation to work
+        # hence the sum() operation
+        y.sum().backward()
+        assert x.grad is not None
