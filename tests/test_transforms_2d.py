@@ -90,7 +90,7 @@ def test_batching():
             raise AssertionError(f"{O.__name__} should raise an error for tensors with last dimension > 2")
 
 
-def test_backpropagation():
+def test_backpropagation_gradients():
     """Test that gradients can be back propagated from output to input."""
     for O in TRANSFORMS:
         x = torch.tensor([90.0, 45.0], requires_grad=True)
