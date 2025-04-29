@@ -8,7 +8,9 @@ import torch
 import einops
 
 
-def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
+def R(angles: torch.Tensor | list | tuple | float, 
+      yx: bool = False, 
+      device: torch.device | None = None) -> torch.Tensor:
     """3x3 matrices for a rotation of homogenous coordinates in 2D.
 
     Matrix structure (xyw):
@@ -28,18 +30,21 @@ def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
 
     Parameters
     ----------
-    angles: torch.Tensor
-        `(..., )` array of angles in degrees
+    angles: torch.Tensor | list | tuple | float
+        `(..., )` array, list-like, or single float of angles in degrees.
     yx: bool
         Whether output should be compatible with `yxw` (`True`) or `xyw`
         (`False`) homogenous coordinates.
+    device: torch.device, optional
+        The device on which to place the resulting tensor. If None, uses the
+        device of the input tensor or defaults to CPU.
 
     Returns
     -------
     matrices: `(..., 3, 3)` array of 3x3 rotation matrices.
     """
-    # shape (...) -> (n, )
-    angles = torch.atleast_1d(torch.as_tensor(angles, dtype=torch.float32))
+    angles = torch.as_tensor(angles, dtype=torch.float32)
+    device = device or angles.device  # Use provided device or input tensor's device
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -49,7 +54,7 @@ def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
     s = torch.sin(angles_radians)
 
     # construct matrices
-    matrices = einops.repeat(torch.eye(3), 'i j -> n i j', n=n).clone()
+    matrices = einops.repeat(torch.eye(3, device=device), 'i j -> n i j', n=n).clone()
     matrices[:, 0, 0] = c
     matrices[:, 0, 1] = -s
     matrices[:, 1, 0] = s
@@ -64,7 +69,8 @@ def R(angles: torch.Tensor, yx: bool = False) -> torch.Tensor:
     return matrices
 
 
-def T(shifts: torch.Tensor) -> torch.Tensor:
+def T(shifts: torch.Tensor | list | tuple, 
+      device: torch.device = None) -> torch.Tensor:
     """3x3 matrices for translations in 2D.
 
     Matrix structure:
@@ -78,21 +84,27 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
 
     Parameters
     ----------
-    shifts: torch.Tensor
-        `(..., 2)` array of shifts.
+    shifts: torch.Tensor | list | tuple
+        `(..., 2)` array or list-like of shifts.
+    device: torch.device, optional
+        The device on which to place the resulting tensor. If None, uses the
+        device of the input tensor or defaults to CPU.
 
     Returns
     -------
     matrices: torch.Tensor
         `(..., 3, 3)` array of 3x3 shift matrices.
     """
-    # shape (...) -> (n, )
-    shifts = torch.atleast_1d(torch.as_tensor(shifts, dtype=torch.float32))
+    shifts = torch.as_tensor(shifts, dtype=torch.float32)
+    if shifts.ndim > 0 and shifts.shape[-1] != 2:
+        raise ValueError("Shifts must have the last dimension of size 2 for 2D transformations.")
+    shifts = torch.atleast_1d(shifts)
+    device = device or shifts.device  # Use provided device or input tensor's device
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
     n = shifts.shape[0]
 
     # construct matrices
-    matrices = einops.repeat(torch.eye(3), 'i j -> n i j', n=n).clone()
+    matrices = einops.repeat(torch.eye(3, device=device), 'i j -> n i j', n=n).clone()
     matrices[:, :2, 2] = shifts
 
     # shape (n, 3, 3) -> (..., 3, 3)
@@ -100,7 +112,8 @@ def T(shifts: torch.Tensor) -> torch.Tensor:
     return matrices
 
 
-def S(scale_factors: torch.Tensor) -> torch.Tensor:
+def S(scale_factors: torch.Tensor | list | tuple | float, 
+      device: torch.device | None = None) -> torch.Tensor:
     """3x3 matrices for scaling in 2D.
 
      Matrix structure:
@@ -114,22 +127,27 @@ def S(scale_factors: torch.Tensor) -> torch.Tensor:
 
     Parameters
     ----------
-    scale_factors: torch.Tensor
-        `(..., 2)` array of scale factors.
+    scale_factors: torch.Tensor | list | tuple | float
+        `(..., 2)` array, list-like, or single float of scale factors.
+    device: torch.device, optional
+        The device on which to place the resulting tensor. If None, uses the
+        device of the input tensor or defaults to CPU.
 
     Returns
     -------
     matrices: torch.Tensor
         `(..., 3, 3)` array of 3x3 scaling matrices.
     """
-    # shape (...) -> (n, )
-    scale_factors = torch.atleast_1d(
-        torch.as_tensor(scale_factors, dtype=torch.float32))
+    scale_factors = torch.as_tensor(scale_factors, dtype=torch.float32)
+    if scale_factors.ndim > 0 and scale_factors.shape[-1] != 2:
+        raise ValueError("Scale factors must have the last dimension of size 2 for 2D transformations.")
+    scale_factors = torch.atleast_1d(scale_factors)
+    device = device or scale_factors.device  # Use provided device or input tensor's device
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
     n = scale_factors.shape[0]
 
     # construct matrices
-    matrices = einops.repeat(torch.eye(3), 'i j -> n i j', n=n).clone()
+    matrices = einops.repeat(torch.eye(3, device=device), 'i j -> n i j', n=n).clone()
     matrices[:, [0, 1], [0, 1]] = scale_factors
 
     # shape (n, 3, 3) -> (..., 3, 3)
