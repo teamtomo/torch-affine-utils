@@ -2,6 +2,7 @@ import torch
 
 from torch_affine_utils.transforms_3d import Rx, Ry, Rz, T, S
 
+TRANSFORMS = [Rx, Ry, Rz, T, S]
 
 def test_rotation_around_x():
     """Rotation of y around x should become z."""
@@ -49,15 +50,13 @@ def test_translation():
     expected = torch.tensor([1, 2, 3, 1]).view((4, 1)).float()
     assert torch.allclose(M @ v, expected, atol=1e-6)
 
+
 def test_scaling():
     """Translations"""
     M = S([1, 2, 3])
     v = torch.tensor([1, 1, 1, 1]).view((4, 1)).float()
     expected = torch.tensor([1, 2, 3, 1]).view((4, 1)).float()
     assert torch.allclose(M @ v, expected, atol=1e-6)
-
-
-TRANSFORMS = [Rx, Ry, Rz, T, S]
 
 
 def test_devices():
