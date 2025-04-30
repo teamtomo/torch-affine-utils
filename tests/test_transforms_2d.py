@@ -88,3 +88,16 @@ def test_batching():
             pass
         else:
             raise AssertionError(f"{O.__name__} should raise an error for tensors with last dimension > 2")
+
+
+def test_backpropagation_gradients():
+    """Test that gradients can be back propagated from output to input."""
+    for O in TRANSFORMS:
+        x = torch.tensor([90.0, 45.0], requires_grad=True)
+        y = O(x)
+        assert y.requires_grad
+
+        # y needs to be a scalar value (i.e. a loss) for backpropagation to work
+        # hence the sum() operation
+        y.sum().backward()
+        assert x.grad is not None
