@@ -48,6 +48,7 @@ def Rx(angles: torch.Tensor | list | tuple | float,
     # shape (...) -> (n, )
     angles = torch.as_tensor(angles, dtype=torch.float32)
     device = device or angles.device  # Use provided device or input tensor's device
+    angles = angles.to(device)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -112,6 +113,7 @@ def Ry(angles: torch.Tensor | list | tuple | float,
     # shape (...) -> (n, )
     angles = torch.as_tensor(angles, dtype=torch.float32)
     device = device or angles.device  # Use provided device or input tensor's device
+    angles = angles.to(device)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -176,6 +178,7 @@ def Rz(angles: torch.Tensor | list | tuple | float,
     # shape (...) -> (n, )
     angles = torch.as_tensor(angles, dtype=torch.float32)
     device = device or angles.device  # Use provided device or input tensor's device
+    angles = angles.to(device)
     angles_packed, ps = einops.pack([angles], pattern='*')  # to 1d
     n = angles_packed.shape[0]
 
@@ -229,6 +232,7 @@ def T(shifts: torch.Tensor | list | tuple,
         raise ValueError("Shifts must have the last dimension of size 3 for 3D transformations.")
     shifts = torch.atleast_1d(shifts)
     device = device or shifts.device  # Use provided device or input tensor's device
+    shifts = shifts.to(device)
     shifts, ps = einops.pack([shifts], pattern='* coords')  # to 2d
     n = shifts.shape[0]
 
@@ -274,6 +278,7 @@ def S(scale_factors: torch.Tensor | list | tuple | float,
         raise ValueError("Scale factors must have the last dimension of size 3 for 3D transformations.")
     scale_factors = torch.atleast_1d(scale_factors)
     device = device or scale_factors.device  # Use provided device or input tensor's device
+    scale_factors = scale_factors.to(device)
     scale_factors, ps = einops.pack([scale_factors], pattern='* coords')  # to 2d
     n = scale_factors.shape[0]
 
