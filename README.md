@@ -88,11 +88,16 @@ transformed_coords = transform @ coords
 The library supports batched operations for efficient processing:
 
 ```python
+import torch
+from torch_affine_utils.transforms_2d import R
+
 # Batch of rotation angles
 angles = torch.tensor([0.0, 30.0, 45.0, 60.0, 90.0])
 
 # Create batch of 2D rotation matrices
 rotation_matrices = R(angles)  # Shape: (5, 3, 3)
+
+from torch_affine_utils.transforms_3d import T
 
 # Batch of 3D translations
 translations = torch.tensor([
